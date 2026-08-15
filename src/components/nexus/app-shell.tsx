@@ -109,6 +109,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { preview } = useLayoutPreview();
   const forceMobile = preview === "mobile";
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const mainRef = useRef<HTMLElement | null>(null);
+  const mobileNavRef = useRef<HTMLElement | null>(null);
 
 
   useEffect(() => {
@@ -237,25 +239,29 @@ export function AppShell({ children }: { children: ReactNode }) {
             </header>
 
             <main
-              key={pathname}
-              className={cn("scroll-slim animate-rise flex-1 overflow-y-auto px-4 pb-28 pt-6 sm:px-6", !forceMobile && "lg:px-8 lg:pb-10")}
+              ref={mainRef}
+              className={cn("scroll-slim flex-1 overflow-y-auto px-4 pb-28 pt-6 sm:px-6", !forceMobile && "lg:px-8 lg:pb-10")}
             >
-              {children}
+              <PageTransition scrollRef={mainRef}>{children}</PageTransition>
             </main>
           </div>
         </div>
       </div>
 
       {/* mobile tab bar */}
-      <nav className={cn("glass-strong fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-2xl px-2 py-2", forceMobile ? "mx-auto max-w-[406px]" : "lg:hidden")}>
+      <nav
+        ref={mobileNavRef}
+        className={cn("glass-strong fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-2xl px-2 py-2", forceMobile ? "mx-auto max-w-[406px]" : "lg:hidden")}
+      >
+        <NavIndicator containerRef={mobileNavRef} className="rounded-xl" />
         {mobileNavItems.map((item) => (
           <Link
             key={item.to}
             to={item.to}
             activeOptions={{ exact: item.to === "/" }}
-            className="flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[0.68rem] font-medium text-muted-foreground transition-colors data-[status=active]:bg-glass data-[status=active]:text-foreground"
+            className="tactile group relative z-10 flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[0.68rem] font-medium text-muted-foreground data-[status=active]:text-foreground motion-reduce:data-[status=active]:bg-glass"
           >
-            <item.icon className="h-5 w-5" />
+            <item.icon className="h-5 w-5 transition-transform duration-200 ease-[var(--ease-out-quick)] group-data-[status=active]:scale-[1.06]" />
             {item.label.replace("AI ", "")}
           </Link>
         ))}
@@ -263,7 +269,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           type="button"
           onClick={() => setMobileOpen(true)}
           className={cn(
-            "flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[0.68rem] font-medium text-muted-foreground",
+            "tactile relative z-10 flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[0.68rem] font-medium text-muted-foreground",
           )}
         >
           <Menu className="h-5 w-5" />
