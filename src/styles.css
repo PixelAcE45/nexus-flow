@@ -324,6 +324,144 @@
   }
 }
 
+/* ---------- Spatial page transitions ---------- */
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes page-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.99);
+  }
+}
+
+@utility page-enter {
+  animation: page-in var(--dur-4) var(--ease-out-quick) both;
+  will-change: transform, opacity;
+}
+
+@utility page-exit {
+  animation: page-out var(--dur-2) var(--ease-exit) both;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* ---------- Navigation indicator ---------- */
+
+@utility nav-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: var(--radius-xl);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  transition:
+    transform var(--dur-4) var(--ease-out-quick),
+    width var(--dur-4) var(--ease-out-quick),
+    height var(--dur-4) var(--ease-out-quick),
+    opacity var(--dur-3) var(--ease-standard);
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* ---------- Tactile press / micro-interactions ---------- */
+
+@utility tactile {
+  transition:
+    transform var(--dur-3) var(--ease-out-quick),
+    opacity var(--dur-3) var(--ease-standard),
+    background-color var(--dur-3) var(--ease-standard),
+    color var(--dur-3) var(--ease-standard),
+    border-color var(--dur-3) var(--ease-standard),
+    box-shadow var(--dur-3) var(--ease-standard);
+  &:active {
+    transition-duration: var(--dur-1);
+    transform: scale(0.98);
+  }
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[data-status],
+  [role="menuitem"],
+  [role="option"],
+  [role="tab"],
+  [role="checkbox"],
+  [role="switch"] {
+    transition:
+      transform var(--dur-3) var(--ease-out-quick),
+      opacity var(--dur-3) var(--ease-standard),
+      color var(--dur-3) var(--ease-standard),
+      background-color var(--dur-3) var(--ease-standard),
+      border-color var(--dur-3) var(--ease-standard),
+      box-shadow var(--dur-3) var(--ease-standard);
+  }
+
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active,
+  [role="tab"]:active,
+  [role="checkbox"]:active,
+  [role="switch"]:active {
+    transition-duration: var(--dur-1);
+    transform: scale(0.98);
+  }
+
+  input,
+  textarea,
+  select {
+    transition:
+      border-color var(--dur-3) var(--ease-standard),
+      box-shadow var(--dur-3) var(--ease-standard),
+      background-color var(--dur-3) var(--ease-standard);
+  }
+}
+
+/* ---------- Overlays, menus & popovers ---------- */
+
+[data-radix-popper-content-wrapper] > [data-state] {
+  transform-origin: var(--radix-popper-transform-origin);
+  animation-timing-function: var(--ease-out-quick);
+  animation-duration: var(--dur-2);
+}
+
+[data-radix-popper-content-wrapper] > [data-state="closed"] {
+  animation-duration: var(--dur-1);
+  animation-timing-function: var(--ease-exit);
+}
+
+/* ---------- Coordinated theme switching ---------- */
+
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition:
+    background-color var(--dur-4) var(--ease-standard),
+    background-image var(--dur-4) var(--ease-standard),
+    border-color var(--dur-4) var(--ease-standard),
+    color var(--dur-4) var(--ease-standard),
+    fill var(--dur-4) var(--ease-standard),
+    stroke var(--dur-4) var(--ease-standard),
+    box-shadow var(--dur-4) var(--ease-standard),
+    opacity var(--dur-4) var(--ease-standard) !important;
+  transition-delay: 0ms !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
