@@ -72,6 +72,16 @@
   --animate-fade: fade 0.4s ease both;
   --animate-sheen: sheen 2.4s ease-in-out infinite;
   --animate-orbit: orbit 14s linear infinite;
+
+  /* Motion system — quick response, smooth settle */
+  --ease-out-quick: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --dur-1: 110ms;
+  --dur-2: 140ms;
+  --dur-3: 200ms;
+  --dur-4: 280ms;
+  --dur-5: 360ms;
 }
 
 :root {
@@ -229,15 +239,21 @@
 
 @utility glass-hover {
   transition:
-    background-color 0.35s ease,
-    border-color 0.35s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s ease;
+    background-color var(--dur-3) var(--ease-standard),
+    border-color var(--dur-3) var(--ease-standard),
+    filter var(--dur-3) var(--ease-standard),
+    transform var(--dur-3) var(--ease-out-quick),
+    box-shadow var(--dur-3) var(--ease-standard);
   &:hover {
     background: var(--glass-bg-strong);
     border-color: var(--glass-highlight);
     box-shadow: var(--shadow-float);
-    transform: translateY(-2px);
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transition-duration: var(--dur-1);
+    transform: translateY(0) scale(0.985);
   }
 }
 
