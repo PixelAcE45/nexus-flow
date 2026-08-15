@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Bell, ChevronsUpDown, LifeBuoy, LogOut, Menu, Plus, Search, User } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import atmosphere from "@/assets/nexus-atmosphere.jpg";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,8 @@ import { BootScreen } from "./boot-screen";
 import { CommandPalette } from "./command-palette";
 import { useLayoutPreview } from "./layout-provider";
 import { mobileNavItems, navItems } from "./nav-items";
+import { NavIndicator } from "./nav-indicator";
+import { PageTransition } from "./page-transition";
 
 import { NexusLogo, NexusMark } from "./nexus-logo";
 import { QuickCreateDialog } from "./quick-create-dialog";
@@ -25,8 +27,11 @@ import { QuickCreateDialog } from "./quick-create-dialog";
 const groups = ["Workspace", "Intelligence", "System"] as const;
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
+  const containerRef = useRef<HTMLElement | null>(null);
+
   return (
-    <nav className="space-y-6">
+    <nav ref={containerRef} className="relative space-y-6">
+      <NavIndicator containerRef={containerRef} />
       {groups.map((group) => (
         <div key={group}>
           <p className="px-3 pb-2 text-[0.68rem] font-medium tracking-[0.16em] text-muted-foreground">
@@ -41,9 +46,9 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
                     to={item.to}
                     onClick={onNavigate}
                     activeOptions={{ exact: item.to === "/" }}
-                    className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors duration-300 hover:bg-glass hover:text-foreground data-[status=active]:border data-[status=active]:border-glass-border data-[status=active]:bg-glass-strong data-[status=active]:text-foreground data-[status=active]:shadow-[var(--shadow-glass)]"
+                    className="tactile group relative z-10 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-glass/60 hover:text-foreground data-[status=active]:text-foreground motion-reduce:data-[status=active]:border motion-reduce:data-[status=active]:border-glass-border motion-reduce:data-[status=active]:bg-glass-strong"
                   >
-                    <item.icon className="h-[1.05rem] w-[1.05rem] shrink-0 transition-colors group-data-[status=active]:text-violet" />
+                    <item.icon className="h-[1.05rem] w-[1.05rem] shrink-0 transition-[color,transform] duration-200 ease-[var(--ease-out-quick)] group-data-[status=active]:scale-[1.06] group-data-[status=active]:text-violet" />
                     <span className="truncate">{item.label}</span>
                   </Link>
                 </li>
